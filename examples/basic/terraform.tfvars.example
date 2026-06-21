@@ -1,0 +1,10 @@
+asashv_endpoint = "https://192.168.1.220"
+asashv_username = "admin"
+asashv_password = "CHANGE_ME"
+asashv_insecure = true
+
+vm_name = "tf-test-vm-001"
+
+storage_pool_name = "NFS-Storage"
+iso_name          = "ubuntu-26.04-live-server-amd64.iso"
+network_name      = "default"
