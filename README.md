@@ -1,12 +1,26 @@
-# Terraform Provider ASASHV
+# Terraform Provider for AsasHV and Lejam CM
 
-Terraform provider for ASASHV hypervisor management.
+Terraform provider for managing infrastructure resources on **AsasHV Hypervisor** and **Lejam CM**.
 
-This provider allows Terraform to manage ASASHV virtual machines and read ASASHV storage, ISO, and VLAN/network information.
+## Supported Platforms
 
-## Current Features
+- AsasHV Hypervisor
+- Lejam CM
 
-### Provider Configuration
+## Features
+
+- Virtual machine management
+- Cluster management
+- Host management
+- Storage management
+- VLAN management
+- Virtual switch network management
+- ISO discovery
+- Storage pool discovery
+
+## Provider Configuration
+
+The provider supports the following configuration options:
 
 - `endpoint`
 - `username`
@@ -14,15 +28,34 @@ This provider allows Terraform to manage ASASHV virtual machines and read ASASHV
 - `token`
 - `insecure`
 
-### Resources
+## Resources
+
+### AsasHV
 
 - `asashv_vm`
 
-### Data Sources
+### Lejam CM
+
+- `cm_cluster`
+- `cm_host`
+- `cm_storage_nfs`
+- `cm_vlan`
+- `cm_vm`
+- `cm_vs_network`
+
+## Data Sources
+
+### AsasHV
 
 - `asashv_iso`
 - `asashv_storage_pool`
 - `asashv_vlan`
+
+### Lejam CM
+
+- `cm_host`
+- `cm_iso`
+- `cm_storage`
 
 ## Example
 
@@ -30,7 +63,7 @@ This provider allows Terraform to manage ASASHV virtual machines and read ASASHV
 terraform {
   required_providers {
     asashv = {
-      source  = "asashv/asashv"
+      source  = "VirtuWa/asashv"
       version = "0.1.0"
     }
   }
@@ -41,44 +74,4 @@ provider "asashv" {
   username = var.asashv_username
   password = var.asashv_password
   insecure = true
-}
-
-data "asashv_storage_pool" "nfs" {
-  name = "NFS-Storage"
-}
-
-data "asashv_iso" "ubuntu" {
-  name = "ubuntu-26.04-live-server-amd64.iso"
-}
-
-data "asashv_vlan" "default" {
-  name = "default"
-}
-
-resource "asashv_vm" "test" {
-  name        = "tf-test-vm-001"
-  description = "Created by Terraform"
-
-  vcpu      = 1
-  vcores    = 1
-  memory_gb = 2
-  boot_type = "uefi"
-
-  disks {
-    pool           = data.asashv_storage_pool.nfs.name
-    size_gb        = 20
-    bus            = "virtio"
-    format         = "qcow2"
-    storage_target = "allocate"
-  }
-
-  cdrom {
-    id = data.asashv_iso.ubuntu.id
-  }
-
-  nics = [data.asashv_vlan.default.name]
-
-  boot_order = ["disk0", "cdrom0"]
-
-  delete_disks = true
 }
