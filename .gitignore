@@ -25,3 +25,6 @@ terraform-provider-asashv
 
 # OS
 .DS_Store
+
+# Compiled Terraform provider binaries
+terraform-provider-asashv_v*.exe
